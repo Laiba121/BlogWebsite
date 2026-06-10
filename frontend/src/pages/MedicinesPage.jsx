@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import MedicineSidebar from "../components/MedicineSidebar";
 import MedicineGrid from "../components/MedicineGrid";
 import Pagination from "../components/Pagination";
 import Footer from "../components/Footer";
@@ -10,7 +10,7 @@ const MedicinesPage = () => {
       <Navbar />
 
       <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
+        <MedicineSidebar />
 
         <main className="flex-1 p-8">
           <div className="mb-6">
