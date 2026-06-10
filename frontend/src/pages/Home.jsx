@@ -1,24 +1,21 @@
-import React from 'react'
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/HeroSection'
 import CategoryGrid from '../components/CategoryGrid'
-import MedicineCard from '../components/MedicineCard'
+import FeaturedMedicines from '../components/FeaturedMedicines'
 import TrendingSection from '../components/TrendingSection'
 import NewsletterSection from '../components/NewsletterSection'
-import Footer from '../components/Footer'   
+import Footer from '../components/Footer'
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>
-        <Navbar/>
-        <HeroSection/>
-        <CategoryGrid/> 
-        <MedicineCard/>
-        <TrendingSection/>
-        <NewsletterSection/>
-        <Footer/>   
+    <div className="min-h-screen bg-slate-50 font-sans">
+      <Navbar />
+      <HeroSection />
+      <CategoryGrid />
+      <FeaturedMedicines />
+      <TrendingSection />
+      <NewsletterSection />
+      <Footer />
     </div>
   )
 }
-
-export default Home
