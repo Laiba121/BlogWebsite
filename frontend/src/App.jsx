@@ -1,14 +1,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-
-// Medicine Pages
 import Home from './pages/Home'
 import MedicineDetails from './pages/MedicineDetails'
 import MedicinesPage from './pages/MedicinesPage'
 import MedicinesCategoriesPage from './pages/MedicinesCategoriesPage'
 import EditorialPage from './pages/EditorialPage'
-
-// Admin Pages
 import Dashboard from './pages/admin/Dashboard'
 import Medicines from './pages/admin/Medicines'
 import Categories from './pages/admin/Categories'
