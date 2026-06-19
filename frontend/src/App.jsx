@@ -6,6 +6,7 @@ import MedicinesPage from './pages/MedicinesPage'
 import MedicinesCategoriesPage from './pages/MedicinesCategoriesPage'
 import EditorialPage from './pages/EditorialPage'
 import Contact from './pages/Contact'
+import AboutUs from "./pages/AboutUs";
 import Dashboard from './pages/admin/Dashboard'
 import Medicines from './pages/admin/Medicines'
 import Categories from './pages/admin/Categories'
@@ -36,7 +37,7 @@ function AppContent() {
           <Route path="/categories" element={<MedicinesCategoriesPage />} />
           <Route path="/editorial" element={<EditorialPage />} />
           <Route path="/contact" element={<Contact />} />
-
+          <Route path="/about" element={<AboutUs />} />
           {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/medicines" element={<Medicines />} />
