@@ -9,6 +9,8 @@ import ArticleDetailPage from './pages/ArticleDetailPage'
 import CategoriesPage from './pages/CategoriesPage'
 import AboutPage from './pages/AboutPage'
 import SubscribePage from './pages/SubscribePage'
+import SignInPage from './pages/SignInPage'
+import SignUpPage from './pages/SignUpPage'
 
 // Admin pages
 import Dashboard from './pages/admin/Dashboard'
@@ -18,6 +20,8 @@ import Converts from './pages/admin/Converts'
 import Users from './pages/admin/Users'
 import Ads from './pages/admin/Ads'
 import Settings from './pages/admin/Settings'
+import AdminRoute from './components/AdminRoute'
+import Profile from './pages/admin/Profile'
 
 
 // ✅ Scroll to top on route change
@@ -47,15 +51,18 @@ function AppContent() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/subscribe" element={<SubscribePage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           
           {/* Admin Routes */}
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/medicines" element={<Medicines />} />
-          <Route path="/admin/categories" element={<Categories />} />
-          <Route path="/admin/converts" element={<Converts />} />
-          <Route path="/admin/users" element={<Users />} />
-          <Route path="/admin/ads" element={<Ads />} />
-          <Route path="/admin/settings" element={<Settings />} />
+          <Route path="/admin" element={<AdminRoute><Dashboard /></AdminRoute>} />
+          <Route path="/admin/medicines" element={<AdminRoute><Medicines /></AdminRoute>} />
+          <Route path="/admin/categories" element={<AdminRoute><Categories /></AdminRoute>} />
+          <Route path="/admin/converts" element={<AdminRoute><Converts /></AdminRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><Users /></AdminRoute>} />
+          <Route path="/admin/ads" element={<AdminRoute><Ads /></AdminRoute>} />
+          <Route path="/admin/settings" element={<AdminRoute><Settings /></AdminRoute>} />
+          <Route path="/admin/profile" element={<AdminRoute><Profile /></AdminRoute>} />
         </Routes>
       </main>
 

@@ -18,7 +18,7 @@ export default function HomePage() {
     <div className="bg-gray-50 min-h-screen">
 
       {/* HERO */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-10 py-16">
+      <section className="bg-linear-to-r from-primary-600 to-primary-400 text-white px-10 py-16">
         <h1 className="text-4xl font-bold mb-2">
           CareerPulse Blog 🚀
         </h1>
@@ -36,7 +36,7 @@ export default function HomePage() {
           <div className="flex justify-between mb-4">
             <h2 className="text-2xl font-bold">Latest Articles</h2>
 
-            <Link to="/articles" className="text-blue-600 font-semibold">
+            <Link to="/articles" className="text-primary-500 font-semibold">
               View More →
             </Link>
           </div>
@@ -121,7 +121,7 @@ export default function HomePage() {
       </section>
 
       {/* NEWSLETTER */}
-      <section className="px-10 py-12 bg-blue-600 text-white text-center">
+      <section className="px-10 py-12 bg-primary-500 text-white text-center">
         <h2 className="text-2xl font-bold mb-2">
           Subscribe to Newsletter
         </h2>

@@ -33,7 +33,7 @@ export default function ActiveNewsletters() {
         ))}
       </div>
 
-      <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+      <button className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
         Create New Campaign
       </button>
     </div>

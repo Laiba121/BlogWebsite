@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+.root-color {
+	/* Primary - balanced and slightly vivid */
+	--color-primary-50: #f0f6ff;
+	--color-primary-100: #dbe9ff;
+	--color-primary-200: #b7dbff;
+	--color-primary-300: #83c0ff;
+	--color-primary-400: #3a92ff;
+	--color-primary-500: #0b5fff;
+	--color-primary-600: #0a54e6;
+	--color-primary-700: #0843b3;
+	--color-primary-800: #062f80;
+
+	/* Secondary */
+	--color-secondary-100: #d7f6f6;
+	--color-secondary-500: #008b8b;
+
+	/* Tertiary */
+	--color-tertiary-100: #ffe6d6;
+	--color-tertiary-500: #b65318;
+
+	/* Neutral */
+	--color-neutral-50: #f8fafb;
+	--color-neutral-100: #f1f5f9;
+	--color-neutral-500: #111827;
+}
+
+/* convenience utilities for non-Tailwind elements */
+.bg-primary { background-color: var(--color-primary-500); }
+.text-primary { color: var(--color-primary-500); }
+.border-primary { border-color: var(--color-primary-500); }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
 })
 
 // ✅ Handle errors globally
@@ -24,5 +24,17 @@ export const getCategories = () =>
 
 export const subscribe = (email) =>
   api.post('/api/subscribe', { email }).then(r => r.data)
+
+export const signIn = (credentials) =>
+  api.post('/api/auth/signin', credentials).then(r => r.data)
+
+export const signUp = (payload) =>
+  api.post('/api/auth/signup', payload).then(r => r.data)
+
+export const getAdminProfile = (token) =>
+  api.get('/api/admin/profile', { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data)
+
+export const updateAdminProfile = (formData, token) =>
+  api.put('/api/admin/profile', formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }).then(r => r.data)
 
 export default api
