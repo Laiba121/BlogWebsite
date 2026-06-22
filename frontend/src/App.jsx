@@ -6,7 +6,7 @@ import MedicinesPage from './pages/MedicinesPage'
 import MedicinesCategoriesPage from './pages/MedicinesCategoriesPage'
 import EditorialPage from './pages/EditorialPage'
 import Contact from './pages/Contact'
-import AboutUs from "./pages/AboutUs";
+
 import Dashboard from './pages/admin/Dashboard'
 import Medicines from './pages/admin/Medicines'
 import Categories from './pages/admin/Categories'
