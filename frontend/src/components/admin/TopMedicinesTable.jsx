@@ -1,44 +1,17 @@
-import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 
-export default function TopMedicinesTable() {
-  const medicines = [
-    {
-      id: 1,
-      name: 'Amoxicillin',
-      icon: '💊',
-      category: 'Cardiology',
-      monthlyViews: '24,500',
-      status: 'Active',
-      statusColor: 'bg-green-100 text-green-700'
-    },
-    {
-      id: 2,
-      name: 'Metformin HCL',
-      icon: '💉',
-      category: 'Metabolic',
-      monthlyViews: '18,270',
-      status: 'Active',
-      statusColor: 'bg-green-100 text-green-700'
-    },
-    {
-      id: 3,
-      name: 'Amoxicillin/Clavuc',
-      icon: '🩺',
-      category: 'Antibiotics',
-      monthlyViews: '15,401',
-      status: 'Pending',
-      statusColor: 'bg-yellow-100 text-yellow-700'
-    },
-    {
-      id: 4,
-      name: 'Oxycodone',
-      icon: '⚠️',
-      category: 'Pain Relief',
-      monthlyViews: '12,100',
-      status: 'Restricted',
-      statusColor: 'bg-red-100 text-red-700'
-    },
-  ];
+export default function TopMedicinesTable({ medicines = [], loading }) {
+  const rows = loading
+    ? Array.from({ length: 4 }).map((_, idx) => ({
+        id: `loading-${idx}`,
+        name: 'Loading...',
+        icon: '💊',
+        category: 'Loading',
+        monthlyViews: '--',
+        status: 'Loading',
+        statusColor: 'bg-gray-100 text-gray-700',
+      }))
+    : medicines
 
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-6 shadow-sm relative">
@@ -54,7 +27,6 @@ export default function TopMedicinesTable() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -67,7 +39,7 @@ export default function TopMedicinesTable() {
             </tr>
           </thead>
           <tbody>
-            {medicines.map((medicine) => (
+            {rows.map((medicine) => (
               <tr key={medicine.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="py-4 px-4">
                   <div className="flex items-center gap-4">
@@ -101,9 +73,8 @@ export default function TopMedicinesTable() {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
-        <span className="text-sm text-gray-600">Showing 1 of 12,482 entries</span>
+        <span className="text-sm text-gray-600">Showing 1 of {Math.max(1, rows.length)} entries</span>
         <div className="flex gap-2">
           <button className="p-1 text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50">
             <ChevronLeft size={20} />
@@ -118,10 +89,9 @@ export default function TopMedicinesTable() {
         </div>
       </div>
 
-      {/* Floating action button */}
       <button className="absolute right-6 bottom-6 w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-primary-700">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M5 12H19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </button>
     </div>
-  );
+  )
 }

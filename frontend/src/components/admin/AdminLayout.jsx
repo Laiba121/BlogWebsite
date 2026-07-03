@@ -7,7 +7,7 @@ export default function AdminLayout({ children }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('careerpulse_token')
+    const token = localStorage.getItem('pharmacontext_token')
     if (!token) return
 
     let mounted = true
@@ -15,7 +15,7 @@ export default function AdminLayout({ children }) {
       .then(u => {
         if (!mounted) return
         setUser(u)
-        localStorage.setItem('careerpulse_user', JSON.stringify(u))
+        localStorage.setItem('pharmacontext_user', JSON.stringify(u))
       })
       .catch(() => {
         // ignore

@@ -12,7 +12,7 @@ export default function Profile() {
   const [preview, setPreview] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('careerpulse_token')
+    const token = localStorage.getItem('pharmacontext_token')
     if (!token) return navigate('/signin')
 
     getAdminProfile(token)
@@ -22,8 +22,8 @@ export default function Profile() {
       })
       .catch(() => {
         // on error, redirect to signin
-        localStorage.removeItem('careerpulse_token')
-        localStorage.removeItem('careerpulse_user')
+        localStorage.removeItem('pharmacontext_token')
+        localStorage.removeItem('pharmacontext_user')
         navigate('/signin')
       })
       .finally(() => setLoading(false))
@@ -41,7 +41,7 @@ export default function Profile() {
     e.preventDefault()
     setSaving(true)
     try {
-      const token = localStorage.getItem('careerpulse_token')
+      const token = localStorage.getItem('pharmacontext_token')
       const fd = new FormData()
       fd.append('name', form.name)
       fd.append('email', form.email)
@@ -51,7 +51,7 @@ export default function Profile() {
 
       const updated = await updateAdminProfile(fd, token)
       // persist and navigate
-      localStorage.setItem('careerpulse_user', JSON.stringify(updated))
+      localStorage.setItem('pharmacontext_user', JSON.stringify(updated))
       navigate('/admin')
     } catch (err) {
       console.error(err)

@@ -6,14 +6,14 @@ export default function Topbar() {
   const [showProfile, setShowProfile] = useState(false);
   const navigate = useNavigate();
 
-  const stored = typeof window !== 'undefined' ? localStorage.getItem('careerpulse_user') : null;
+  const stored = typeof window !== 'undefined' ? localStorage.getItem('pharmacontext_user') : null;
   const currentUser = stored ? JSON.parse(stored) : null;
   const avatarSrc = currentUser?.avatar ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'Admin User')}&background=1d4ed8&color=fff`;
 
   function handleLogout() {
-    localStorage.removeItem('careerpulse_token');
-    localStorage.removeItem('careerpulse_user');
+    localStorage.removeItem('pharmacontext_token');
+    localStorage.removeItem('pharmacontext_user');
     setShowProfile(false);
     navigate('/signin');
   }
@@ -107,7 +107,7 @@ export default function Topbar() {
               <div className="px-4 py-3" style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <p className="text-sm font-semibold text-gray-900">{currentUser?.name || 'Admin User'}</p>
                 <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
-                  {currentUser?.email || 'admin@careerpulse.com'}
+                  {currentUser?.email || 'admin@pharmacontext.com'}
                 </p>
               </div>
               <div className="p-1.5">

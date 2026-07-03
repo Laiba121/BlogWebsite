@@ -22,17 +22,77 @@ export const getArticle = (slug) =>
 export const getCategories = () =>
   api.get('/api/categories').then(r => r.data)
 
+export const getDrugs = (params) =>
+  api.get('/api/drugs', { params }).then(r => r.data)
+
+export const importDrugsFirstPage = () =>
+  api.post('/api/drugs/import-first-page').then(r => r.data)
+
+export const importDrugsPages = (startPage, endPage) =>
+  api.post('/api/drugs/import-all', { startPage, endPage }).then(r => r.data)
+
+export const importDrugDetails = (limit = 100) =>
+  api.post('/api/drugs/import-all-details', { limit }).then(r => r.data)
+
+export const importOpenFdaMetadata = (limit = 100) =>
+  api.post('/api/drugs/import-openfda-label', { limit }).then(r => r.data)
+
+export const getDrugBySetIdOrSlug = (setIdOrSlug) =>
+  api
+    .get(`/api/drugs/search?query=${encodeURIComponent(setIdOrSlug || '')}`)
+    .then((r) => {
+      const drugs = r?.data?.drugs || []
+
+      const query = String(setIdOrSlug || '')
+      const queryLower = query.toLowerCase()
+
+      // Most reliable: exact setId match
+      const exactBySetId = drugs.find((d) => d.setId === query)
+      if (exactBySetId) return exactBySetId
+
+      // Exact title match (case-insensitive)
+      const exactByTitle = drugs.find((d) => (d.title || '').toLowerCase() === queryLower)
+      if (exactByTitle) return exactByTitle
+
+      // Otherwise: starts-with title match (case-insensitive)
+      const partialByTitle = drugs.find((d) => (d.title || '').toLowerCase().startsWith(queryLower))
+      return partialByTitle || drugs[0] || null
+    })
+
+
+
 export const subscribe = (email) =>
   api.post('/api/subscribe', { email }).then(r => r.data)
 
 export const signIn = (credentials) =>
   api.post('/api/auth/signin', credentials).then(r => r.data)
 
+export const googleSignIn = (idToken) =>
+  api.post('/api/auth/signin/google', { idToken }).then(r => r.data)
+
 export const signUp = (payload) =>
   api.post('/api/auth/signup', payload).then(r => r.data)
 
+export const googleSignUp = (idToken) =>
+  api.post('/api/auth/signup/google', { idToken }).then(r => r.data)
+
+export const resendVerification = (email) =>
+  api.post('/api/auth/resend-verification', { email }).then(r => r.data)
+
+export const verifyEmail = (payload) =>
+  api.post('/api/auth/verify-email', payload).then(r => r.data)
+
+export const forgotPassword = (email) =>
+  api.post('/api/auth/forgot-password', { email }).then(r => r.data)
+
+export const resetPassword = (payload) =>
+  api.post('/api/auth/reset-password', payload).then(r => r.data)
+
 export const getAdminProfile = (token) =>
   api.get('/api/admin/profile', { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data)
+
+export const getAdminDashboard = (token) =>
+  api.get('/api/admin/dashboard', { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data)
 
 export const updateAdminProfile = (formData, token) =>
   api.put('/api/admin/profile', formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }).then(r => r.data)

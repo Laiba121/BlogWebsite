@@ -20,7 +20,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="bg-linear-to-r from-primary-600 to-primary-400 text-white px-10 py-16">
         <h1 className="text-4xl font-bold mb-2">
-          CareerPulse Blog 🚀
+          PharmaContext Blog 🚀
         </h1>
         <p className="text-lg">
           Learn skills. Build career. Stay updated.

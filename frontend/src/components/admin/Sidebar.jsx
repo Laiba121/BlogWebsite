@@ -17,8 +17,8 @@ import {
 function LogoutButton() {
   const navigate = useNavigate()
   function handleLogout() {
-    localStorage.removeItem('careerpulse_token')
-    localStorage.removeItem('careerpulse_user')
+    localStorage.removeItem('pharmacontext_token')
+    localStorage.removeItem('pharmacontext_user')
     navigate('/signin')
   }
 
@@ -51,7 +51,7 @@ export default function Sidebar({ user }) {
 
   const isActive = (path) => location.pathname === path;
 
-  const stored = typeof window !== 'undefined' ? localStorage.getItem('careerpulse_user') : null;
+  const stored = typeof window !== 'undefined' ? localStorage.getItem('pharmacontext_user') : null;
   const currentUser = user || (stored ? JSON.parse(stored) : null);
   const avatarSrc = currentUser?.avatar ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'Admin')}&background=1d4ed8&color=fff`;
