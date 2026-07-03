@@ -1,62 +1,108 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Pill, 
-  List, 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Pill,
+  List,
   MessageSquare,
   Megaphone,
   Settings,
   LogOut,
+  HelpCircle,
   Menu,
   X,
   Plus
 } from 'lucide-react';
 
-export default function Sidebar() {
+function LogoutButton() {
+  const navigate = useNavigate()
+  function handleLogout() {
+    localStorage.removeItem('pharmacontext_token')
+    localStorage.removeItem('pharmacontext_user')
+    navigate('/signin')
+  }
+
+  return (
+    <button
+      onClick={handleLogout}
+      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+      style={{ color: '#94a3b8', background: 'transparent' }}
+      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+    >
+      <LogOut size={18} />
+      Logout
+    </button>
+  )
+}
+
+export default function Sidebar({ user }) {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
-    { icon: Pill, label: 'Medicines', path: '/admin/medicines' },
-    { icon: List, label: 'Categories', path: '/admin/categories' },
-    { icon: MessageSquare, label: 'Converts', path: '/admin/converts' },
-    { icon: Megaphone, label: 'Ads', path: '/admin/ads' },
-    { icon: Settings, label: 'Settings', path: '/admin/settings' },
+    { icon: Pill,            label: 'Medicines',  path: '/admin/medicines' },
+    { icon: List,            label: 'Categories', path: '/admin/categories' },
+    { icon: MessageSquare,   label: 'Converts',   path: '/admin/converts' },
+    { icon: Megaphone,       label: 'Ads',        path: '/admin/ads' },
+    { icon: Settings,        label: 'Settings',   path: '/admin/settings' },
   ];
 
   const isActive = (path) => location.pathname === path;
 
+  const stored = typeof window !== 'undefined' ? localStorage.getItem('pharmacontext_user') : null;
+  const currentUser = user || (stored ? JSON.parse(stored) : null);
+  const avatarSrc = currentUser?.avatar ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'Admin')}&background=1d4ed8&color=fff`;
+
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-blue-600 text-white p-2 rounded"
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      {/* Mobile toggle */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed top-4 left-4 z-50 lg:hidden bg-blue-700 text-white p-2 rounded-lg shadow"
+          aria-label="Open sidebar"
+        >
+          <Menu size={22} />
+        </button>
+      )}
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white transition-transform duration-300 z-40 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 flex flex-col`}
+        className={`fixed left-0 top-0 h-screen w-64 flex flex-col z-40 transition-transform duration-300 shadow-xl
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        style={{ background: '#0f172a' }}
       >
-        {/* Logo/Header */}
-        <div className="p-6 border-b border-gray-700">
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <div className="bg-blue-600 p-2 rounded">
-              <Pill size={20} />
-            </div>
-            Admin Console
-          </h1>
-          <p className="text-xs text-gray-400 mt-1">System Administration</p>
-        </div>
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute top-4 right-4 z-10 lg:hidden bg-white/10 text-white p-2 rounded-lg transition-colors hover:bg-white/15"
+          aria-label="Close sidebar"
+        >
+          <X size={20} />
+        </button>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 p-4 space-y-2">
+        {/* Profile header */}
+        <Link
+          to="/admin/profile"
+          onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
+          className="px-5 pb-5 pt-16 lg:pt-6 flex flex-col items-center text-center gap-3"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0" style={{ background: '#1d4ed8' }}>
+            <img src={avatarSrc} alt="admin" className="w-full h-full object-cover" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white leading-tight">
+              {currentUser?.name || 'Admin User'}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>System Administrator</p>
+          </div>
+        </Link>
+
+        {/* Nav */}
+        <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -65,37 +111,55 @@ export default function Sidebar() {
                 key={item.path}
                 to={item.path}
                 onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  active
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                }`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                  ${active
+                    ? 'text-white border-l-[3px] border-blue-400 pl-2.5'
+                    : 'hover:text-white'
+                  }`}
+                style={{
+                  background: active ? 'rgba(30,64,175,0.35)' : 'transparent',
+                  color: active ? '#fff' : '#94a3b8',
+                }}
+                onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+                onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}
               >
-                <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <Icon size={18} />
+                <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Add Medicine Button and Logout */}
-        <div className="border-t border-gray-700 p-4 space-y-2">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors">
-            <Plus size={20} />
+        {/* Help link */}
+        <div
+          className="flex items-center gap-3 px-5 py-2.5 text-sm cursor-pointer"
+          style={{ color: '#64748b' }}
+        >
+          <HelpCircle size={18} />
+          <span>Help</span>
+        </div>
+
+        {/* Footer */}
+        <div className="px-3 pb-4 pt-2 space-y-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <button
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold text-white transition-colors"
+            style={{ background: '#1d4ed8' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#1e40af'}
+            onMouseLeave={e => e.currentTarget.style.background = '#1d4ed8'}
+          >
+            <Plus size={18} />
             Add New Medicine
           </button>
-          <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white w-full transition-colors">
-            <LogOut size={20} />
-            <span className="font-medium">Logout</span>
-          </button>
+
+          <LogoutButton />
         </div>
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
         />
       )}
     </>

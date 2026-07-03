@@ -5,3 +5,4 @@ frontend/node_modules/
 frontend/.env
 backend/.env
 uploads/
+backend/seed.js

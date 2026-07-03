@@ -1,73 +1,128 @@
-import { Bell, User, Search, ChevronDown } from 'lucide-react';
+import { Bell, Search, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Topbar() {
   const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
+
+  const stored = typeof window !== 'undefined' ? localStorage.getItem('pharmacontext_user') : null;
+  const currentUser = stored ? JSON.parse(stored) : null;
+  const avatarSrc = currentUser?.avatar ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'Admin User')}&background=1d4ed8&color=fff`;
+
+  function handleLogout() {
+    localStorage.removeItem('pharmacontext_token');
+    localStorage.removeItem('pharmacontext_user');
+    setShowProfile(false);
+    navigate('/signin');
+  }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-40 lg:left-64">
-      <div className="h-full px-6 flex items-center justify-between">
-        {/* Left Section - Title */}
-        <div className="hidden lg:block">
-          <h2 className="text-sm font-semibold text-gray-900">Admin Workspace</h2>
-          <p className="text-xs text-gray-500">System Administration</p>
-        </div>
+    <div
+      className="fixed top-0 right-0 z-40 flex items-center h-14 px-5 gap-4 bg-white"
+      style={{
+        left: '256px',   /* matches sidebar w-64 = 16rem = 256px */
+        borderBottom: '1px solid #e2e8f0',
+      }}
+    >
+      {/* Left: workspace title */}
+      <div className="hidden lg:block shrink-0">
+        <p className="text-xs font-semibold text-gray-900 leading-tight">Admin Workspace</p>
+        <p className="text-[10px] mt-0.5" style={{ color: '#94a3b8' }}>System Administration</p>
+      </div>
 
-        {/* Middle Section - Search */}
-        <div className="flex-1 max-w-md mx-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search data, reports, things..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
+      {/* Search */}
+      <div className="relative flex-1 max-w-xs mx-2">
+        <Search
+          size={15}
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: '#94a3b8' }}
+        />
+        <input
+          type="text"
+          placeholder="Search data, reports, things..."
+          className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg outline-none"
+          style={{
+            background: '#f1f5f9',
+            border: 'none',
+            color: '#1e293b',
+          }}
+        />
+      </div>
 
-        {/* Right Section - Icons and Profile */}
-        <div className="flex items-center gap-4">
-          {/* Alert Badge */}
-          <button className="text-blue-600 bg-blue-100 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-blue-200 transition-colors">
-            <span>Alert View</span>
-            <ChevronDown size={16} />
+      {/* Right section */}
+      <div className="flex items-center gap-2.5 ml-auto">
+
+        {/* Alert View badge */}
+        <button
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+          style={{
+            background: '#eff6ff',
+            color: '#1d4ed8',
+            border: '1px solid #bfdbfe',
+          }}
+        >
+          <span>Alert View</span>
+          <ChevronDown size={13} />
+        </button>
+
+        {/* Bell */}
+        <button
+          className="relative flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-gray-100"
+          style={{ color: '#64748b' }}
+          aria-label="Notifications"
+        >
+          <Bell size={18} />
+          <span
+            className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
+            style={{ background: '#ef4444', border: '1.5px solid #fff' }}
+          />
+        </button>
+
+        {/* Profile dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowProfile(!showProfile)}
+            className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors hover:bg-gray-100"
+          >
+            <div className="w-7 h-7 rounded-full overflow-hidden shrink-0" style={{ background: '#1d4ed8' }}>
+              <img src={avatarSrc} alt="avatar" className="w-full h-full object-cover" />
+            </div>
+            <span className="hidden sm:inline text-xs font-medium text-gray-700">
+              {currentUser?.name || 'Admin User'}
+            </span>
+            <ChevronDown size={14} style={{ color: '#94a3b8' }} />
           </button>
 
-          {/* Notifications */}
-          <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
-
-          {/* Profile Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowProfile(!showProfile)}
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          {showProfile && (
+            <div
+              className="absolute right-0 mt-1.5 w-48 rounded-xl overflow-hidden z-50"
+              style={{
+                background: '#fff',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                border: '1px solid #e2e8f0',
+              }}
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                A
+              <div className="px-4 py-3" style={{ borderBottom: '1px solid #f1f5f9' }}>
+                <p className="text-sm font-semibold text-gray-900">{currentUser?.name || 'Admin User'}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+                  {currentUser?.email || 'admin@pharmacontext.com'}
+                </p>
               </div>
-              <span className="text-sm font-medium text-gray-700 hidden sm:inline">Admin User</span>
-              <ChevronDown size={16} className="text-gray-600" />
-            </button>
-            {showProfile && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50">
-                <div className="px-4 py-3 border-b">
-                  <p className="font-semibold text-gray-900">Admin User</p>
-                  <p className="text-xs text-gray-600">admin@pharmacontest.com</p>
-                </div>
-                <div className="p-2">
-                  <button className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded text-sm">
-                    Profile Settings
-                  </button>
-                  <button className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded text-sm">
-                    Logout
-                  </button>
-                </div>
+              <div className="p-1.5">
+                <button onClick={() => { setShowProfile(false); navigate('/admin/profile') }} className="w-full text-left px-3 py-2 text-xs text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                  Profile Settings
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-2 text-xs text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Logout
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

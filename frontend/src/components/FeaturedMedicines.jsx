@@ -1,39 +1,28 @@
-import MedicineCard from './MedicineCard'
+import { useEffect, useMemo, useState } from 'react'
 
-const medicines = [
-  {
-    status: 'APPROVED',
-    name: 'Amoxicillin',
-    description: 'A broad-spectrum penicillin antibiotic used to treat various bacterial infections including respiratory, urinary tract, and skin infections.',
-    drugClass: 'Antibiotic',
-    slug: 'amoxicillin',
-  },
-  {
-    status: 'APPROVED',
-    name: 'Atorvastatin',
-    description: 'Lipid-lowering medication used to prevent cardiovascular disease in those at high risk and treat elevated cholesterol levels.',
-    drugClass: 'Statin',
-    slug: 'atorvastatin',
-  },
-  {
-    status: 'RESTRICTED',
-    name: 'Codeine Phosphate',
-    description: 'Opioid pain medication used to treat mild to moderately severe pain, requiring strict dosage monitoring and a valid prescription.',
-    drugClass: 'Analgesic',
-    slug: 'codeine-phosphate',
-  },
-  {
-    status: 'APPROVED',
-    name: 'Lisinopril',
-    description: 'An ACE inhibitor used to treat high blood pressure, heart failure, and after heart attacks to improve survival outcomes.',
-    drugClass: 'ACE Inhibitor',
-    slug: 'lisinopril',
-  },
-]
+import MedicineCard from './MedicineCard'
+import { getDrugs } from '../api'
 
 export default function FeaturedMedicines() {
+  const [drugs, setDrugs] = useState([])
+
+  useEffect(() => {
+    getDrugs({ page: 1, limit: 12 })
+      .then((res) => {
+        // backend returns { success, drugs, pagination }
+        setDrugs(res?.drugs || [])
+      })
+      .catch(() => setDrugs([]))
+  }, [])
+
+  const featured = useMemo(() => {
+    // Fallback: show first 4 newest drugs
+    return drugs.slice(0, 4)
+  }, [drugs])
+
   return (
     <section className="bg-white border-t border-slate-100 px-8 py-12">
+
 
       {/* Header */}
       <div className="mb-6">
@@ -43,10 +32,20 @@ export default function FeaturedMedicines() {
 
       {/* Cards Grid */}
       <div className="grid grid-cols-4 gap-3.5">
-        {medicines.map(med => (
-          <MedicineCard key={med.slug} medicine={med} />
+        {featured.map((med) => (
+          <MedicineCard
+            key={med._id || med.setId || med.title}
+            medicine={{
+              status: med.hasFullDetails ? 'APPROVED' : 'RESTRICTED',
+              name: med.title,
+              description: med.shortDescription || med.purpose || med.dosage || 'Medicine profile',
+              drugClass: med.category || 'Medicine',
+              slug: med.setId || med.title,
+            }}
+          />
         ))}
       </div>
+
     </section>
   )
 }

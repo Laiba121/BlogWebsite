@@ -1,18 +1,13 @@
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react'
 
-export default function ActiveNewsletters() {
-  const newsletters = [
-    {
-      id: 1,
-      title: 'Monthly Pharma Outlook',
-      count: '12,450 Sent',
-    },
-    {
-      id: 2,
-      title: 'Clinician Weekly eUpdate',
-      count: '8,200 Sent',
-    },
-  ];
+export default function ActiveNewsletters({ newsletters = [], loading }) {
+  const rows = loading
+    ? Array.from({ length: 2 }).map((_, index) => ({
+        id: `loading-${index}`,
+        title: 'Loading...',
+        count: '-- Sent',
+      }))
+    : newsletters
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -22,7 +17,7 @@ export default function ActiveNewsletters() {
       </div>
 
       <div className="space-y-3 mb-6">
-        {newsletters.map((newsletter) => (
+        {rows.map((newsletter) => (
           <div key={newsletter.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div className="flex items-center gap-3">
               <CheckCircle size={20} className="text-green-600" />
@@ -33,9 +28,9 @@ export default function ActiveNewsletters() {
         ))}
       </div>
 
-      <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+      <button className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
         Create New Campaign
       </button>
     </div>
-  );
+  )
 }

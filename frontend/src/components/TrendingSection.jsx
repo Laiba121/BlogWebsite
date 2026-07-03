@@ -1,59 +1,30 @@
-const trendingItems = [
-  {
-    id: 1,
-    name: 'Metformin HCL',
-    sub: 'Rising search volume',
-    badge: '+12% this week',
-    badgeClass: 'text-green-600',
-    icon: (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-      </svg>
-    ),
-  },
-  {
-    id: 2,
-    name: 'Influenza 2024',
-    sub: 'Safety guidelines',
-    badge: 'Updated today',
-    badgeClass: 'text-blue-600',
-    icon: (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-    ),
-  },
-  {
-    id: 3,
-    name: 'Ozempic',
-    sub: 'Dosage guidance',
-    badge: 'Most viewed',
-    badgeClass: 'text-purple-600',
-    icon: (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-      </svg>
-    ),
-  },
-  {
-    id: 4,
-    name: 'Naproxen',
-    sub: 'Drug interaction alert',
-    badge: 'High priority',
-    badgeClass: 'text-red-600',
-    icon: (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-    ),
-  },
-]
+import { useEffect, useMemo, useState } from 'react'
+
+import { getDrugs } from '../api'
 
 export default function TrendingSection() {
+  const [drugs, setDrugs] = useState([])
+
+  useEffect(() => {
+    getDrugs({ page: 1, limit: 8 })
+      .then((res) => setDrugs(res?.drugs || []))
+      .catch(() => setDrugs([]))
+  }, [])
+
+  const trendingItems = useMemo(() => {
+    // No explicit popularity data exists in backend; fallback based on newest
+    return drugs.slice(0, 4).map((d, idx) => ({
+      id: d._id || d.setId || idx,
+      name: d.title,
+      sub: d.category || 'Medicine',
+      badge: d.hasFullDetails ? 'Verified profile' : 'Processing',
+      badgeClass: d.hasFullDetails ? 'text-green-600' : 'text-blue-600',
+    }))
+  }, [drugs])
+
   return (
     <section className="bg-slate-50 border-t border-slate-200 px-8 py-12">
+
 
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
@@ -74,17 +45,17 @@ export default function TrendingSection() {
 
       {/* Cards */}
       <div className="grid grid-cols-4 gap-3">
-        {trendingItems.map(item => (
+        {trendingItems.map((item) => (
           <div
             key={item.id}
             className="bg-white border border-slate-200 rounded-xl px-4 py-3.5 flex items-start gap-3 hover:border-blue-300 transition-colors cursor-pointer"
           >
-            {/* Icon Box */}
             <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-              {item.icon}
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
             </div>
 
-            {/* Info */}
             <div className="min-w-0">
               <p className="text-[13px] font-semibold text-slate-900">{item.name}</p>
               <p className="text-[11.5px] text-slate-400 mt-0.5">{item.sub}</p>
@@ -93,6 +64,7 @@ export default function TrendingSection() {
           </div>
         ))}
       </div>
+
     </section>
   )
 }
