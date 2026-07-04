@@ -649,16 +649,24 @@ router.post("/:id/refresh-details", async (req, res) => {
   }
 })
 
-// Search drugs
+// Search drugs (supports title/brand/generic AND direct setId lookup)
 router.get("/search", async (req, res) => {
   try {
     const { query } = req.query
+    const q = (query || '').toString().trim()
+    const qEscaped = escapeRegExp(q)
 
     const drugs = await Drug.find({
       $or: [
-        { title: { $regex: query, $options: "i" } },
-        { brandName: { $regex: query, $options: "i" } },
-        { genericName: { $regex: query, $options: "i" } }
+        // direct setId match
+        { setId: q },
+
+        // regex title/brand/generic match (case-insensitive)
+        ...(q ? [
+          { title: { $regex: qEscaped, $options: "i" } },
+          { brandName: { $regex: qEscaped, $options: "i" } },
+          { genericName: { $regex: qEscaped, $options: "i" } }
+        ] : [])
       ]
     }).limit(50)
 

@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 
 import articleRoutes  from "./src/routes/articles.js"
 import adminRoutes    from "./src/routes/admin.js"
+import authRoutes     from "./src/routes/auth.js"
 import categoryRoutes from "./src/routes/categories.js"
 import drugRoutes     from "./src/routes/drugs.js"
 
@@ -17,6 +18,7 @@ app.use(express.json())
 
 app.use("/api/articles",   articleRoutes)
 app.use("/api/admin",      adminRoutes)
+app.use("/api/auth",       authRoutes)
 app.use("/api/categories", categoryRoutes)
 app.use("/api/drugs",      drugRoutes)
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Download, AlertCircle, CheckCircle, Loader } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 export default function DrugImport({ onImportComplete }) {
   const [loadingFirstPage, setLoadingFirstPage] = useState(false);
@@ -16,7 +16,7 @@ export default function DrugImport({ onImportComplete }) {
 
   const fetchStatus = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/drugs/status');
+      const res = await api.get('/api/drugs/status');
       setStatus(res.data);
     } catch (err) {
       console.error(err);
@@ -32,9 +32,7 @@ export default function DrugImport({ onImportComplete }) {
     setError('');
     setMessage('');
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/drugs/import-first-page'
-      );
+      const res = await api.post('/api/drugs/import-first-page');
       setMessage(res.data.message);
       await fetchStatus();
       if (onImportComplete) onImportComplete();
@@ -57,13 +55,10 @@ export default function DrugImport({ onImportComplete }) {
     setError('');
     setMessage('');
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/drugs/import-all',
-        {
-          startPage: parseInt(pageRange.start, 10),
-          endPage: parseInt(pageRange.end, 10)
-        }
-      );
+      const res = await api.post('/api/drugs/import-all', {
+        startPage: Number(pageRange.start),
+        endPage: Number(pageRange.end)
+      });
       setMessage(
         `Imported: ${res.data.totalImported}, Skipped: ${res.data.totalSkipped}`
       );
@@ -83,10 +78,7 @@ export default function DrugImport({ onImportComplete }) {
     setError('');
     setMessage('');
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/drugs/import-all-details',
-        { limit: 100 }
-      );
+      const res = await api.post('/api/drugs/import-all-details', { limit: 100 });
       setMessage(
         `Processed: ${res.data.processed}, Failed: ${res.data.failed}`
       );
@@ -107,10 +99,7 @@ export default function DrugImport({ onImportComplete }) {
     setMessage('');
     setUnmatched([]);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/drugs/import-openfda-label',
-        { limit: 100 }
-      );
+      const res = await api.post('/api/drugs/import-openfda-label', { limit: 100 });
       setMessage(
         `Updated: ${res.data.updatedCount}, Not found: ${res.data.notFoundCount}`
       );
@@ -135,7 +124,7 @@ export default function DrugImport({ onImportComplete }) {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <p className="text-gray-600 text-sm">Total Drugs</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-primary-500">
                 {status.totalDrugs.toLocaleString()}
               </p>
             </div>
@@ -183,7 +172,7 @@ export default function DrugImport({ onImportComplete }) {
               <button
                 onClick={handleImportFirstPage}
                 disabled={isBusy}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
               >
                 {loadingFirstPage ? (
                   <>
@@ -240,7 +229,7 @@ export default function DrugImport({ onImportComplete }) {
               <button
                 onClick={handleImportAll}
                 disabled={isBusy}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
               >
                 {loadingPages ? (
                   <>
@@ -360,7 +349,7 @@ export default function DrugImport({ onImportComplete }) {
         {/* Refresh Status Button */}
         <button
           onClick={fetchStatus}
-          className="mt-4 text-blue-600 hover:text-blue-700 text-sm font-medium"
+          className="mt-4 text-primary-500 hover:text-primary-700 text-sm font-medium"
         >
           Refresh Status
         </button>

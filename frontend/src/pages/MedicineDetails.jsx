@@ -1,3 +1,6 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
 import Navbar from "../components/Navbar";
 import Breadcrumb from "../components/Breadcrumb";
 import MedicineHeader from "../components/MedicineHeader";
@@ -11,7 +14,38 @@ import NewsletterCards from "../components/NewsletterCards";
 import RelatedMedicine from "../components/RelatedMedicine";
 import Footer from "../components/Footer";
 
+import { getDrugBySetIdOrSlug } from '../api'
+
 const MedicineDetails = () => {
+  const { setId } = useParams()
+  const [drug, setDrug] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const normalizedSetId = useMemo(() => setId || '', [setId])
+
+  useEffect(() => {
+    let mounted = true
+
+    setLoading(true)
+    getDrugBySetIdOrSlug(normalizedSetId)
+      .then((d) => {
+        if (!mounted) return
+        setDrug(d)
+      })
+      .catch(() => {
+        if (!mounted) return
+        setDrug(null)
+      })
+      .finally(() => {
+        if (!mounted) return
+        setLoading(false)
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [normalizedSetId])
+
   return (
     <>
       <Navbar />
@@ -21,52 +55,53 @@ const MedicineDetails = () => {
 
         <div className="grid lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3">
-            <MedicineHeader />
+            {/* Pass drug data down */}
+            <MedicineHeader drug={drug} />
 
-            <OverviewCard />
+            <OverviewCard drug={drug} />
 
             <AccordionSection
               title="Uses"
-              content="Uses content goes here."
+              content={drug?.purpose || '—'}
             />
 
             <AccordionSection
               title="Dosage & Administration"
-              content="Dosage content goes here."
+              content={drug?.dosage || '—'}
             />
 
             <AccordionSection
               title="Side Effects"
-              content="Side effects content goes here."
+              content={Array.isArray(drug?.warnings) ? drug.warnings.join(', ') : drug?.warnings || '—'}
             />
 
             <AccordionSection
               title="Important Warnings"
-              content="Warnings content goes here."
+              content={drug?.warnings || '—'}
             />
 
             <AccordionSection
               title="FAQs"
-              content="FAQs content goes here."
+              content={'—'}
             />
 
             <CommunityDiscussion />
           </div>
 
           <div>
-            <QuickFacts />
-            <SimilarDrugs />
+            <QuickFacts drug={drug} />
+            <SimilarDrugs drug={drug} />
             <SponsoredAd />
             <NewsletterCards />
           </div>
         </div>
 
-        <RelatedMedicine />
+        <RelatedMedicine drug={drug} />
       </div>
 
       <Footer />
     </>
-  );
-};
+  )
+}
 
 export default MedicineDetails;
