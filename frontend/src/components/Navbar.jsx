@@ -23,13 +23,13 @@ export default function Navbar() {
         {/* ── Nav Links ── */}
         <ul className="flex items-center gap-7 ml-1">
           {[
-  { label: 'Home', to: '/' },
-  { label: 'Medicines', to: '/medicines' },
-  { label: 'Categories', to: '/categories' },
-  { label: 'Editorial', to: '/editorial' },
-  { label: 'About Us', to: '/about' },
-  { label: 'Contact', to: '/contact' },
-].map(({ label, to }) => (
+        { label: 'Home', to: '/' },
+         { label: 'Medicines', to: '/medicines' },
+        { label: 'Categories', to: '/categories' },
+         { label: 'Editorial', to: '/editorial' },
+          { label: 'About Us', to: '/about' },
+        { label: 'Contact', to: '/contact' },
+        ].map(({ label, to }) => (
             <li key={label}>
               <NavLink
                 to={to}
