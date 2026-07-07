@@ -10,6 +10,7 @@ import categoryRoutes from "./src/routes/categories.js"
 import drugRoutes     from "./src/routes/drugs.js"
 import settingsRoutes from "./src/routes/settings.js"
 import adsRoutes from "./src/routes/ads.js"
+import commentsRoutes from "./src/routes/comments.js"
 
 dotenv.config()
 
@@ -25,6 +26,7 @@ app.use("/api/categories", categoryRoutes)
 app.use("/api/drugs",      drugRoutes)
 app.use("/api/settings",   settingsRoutes)
 app.use("/api/ads",        adsRoutes)
+app.use("/api/comments",   commentsRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))

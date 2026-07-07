@@ -86,7 +86,7 @@ const MedicineDetails = () => {
             />
 
             <AdSenseAd className="lg:mt-0" />
-            <CommunityDiscussion />
+            <CommunityDiscussion medicine={drug} />
           </div>
 
           <div>
