@@ -12,8 +12,8 @@ import SimilarDrugs from "../components/SimilarDrugs";
 import SponsoredAd from "../components/SponsoredAd";
 import NewsletterCards from "../components/NewsletterCards";
 import RelatedMedicine from "../components/RelatedMedicine";
-import Footer from "../components/Footer";
-
+import Footer from "../components/Footer"
+import AdSenseAd from '../components/AdSenseAd'
 import { getDrugBySetIdOrSlug } from '../api'
 
 const MedicineDetails = () => {
@@ -85,6 +85,7 @@ const MedicineDetails = () => {
               content={'—'}
             />
 
+            <AdSenseAd className="lg:mt-0" />
             <CommunityDiscussion />
           </div>
 

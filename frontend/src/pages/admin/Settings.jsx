@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 import {
   AtSign,
   CloudUpload,
@@ -11,6 +12,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import AdminLayout from '../../components/admin/AdminLayout'
+import { useSiteSettings } from '../../context/SiteSettingsContext'
 
 const tabs = [
   { id: 'general', label: 'General Settings', icon: SettingsIcon },
@@ -37,6 +39,14 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState('general')
   const [values, setValues] = useState(initialValues)
   const [savedAt, setSavedAt] = useState('2 mins ago')
+  const [selectedFiles, setSelectedFiles] = useState({ logo: null, favicon: null })
+  const logoInputRef = useRef(null)
+  const faviconInputRef = useRef(null)
+  const { settings, setSettings } = useSiteSettings()
+
+  useEffect(() => {
+    setValues({ ...initialValues, ...settings })
+  }, [settings])
 
   function updateField(event) {
     const { name, value } = event.target
@@ -49,9 +59,32 @@ export default function Settings() {
     setSavedAt('changes discarded')
   }
 
-  function handleSave(event) {
+  async function handleSave(event) {
     event.preventDefault()
-    setSavedAt('just now')
+    try {
+      const formData = new FormData()
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value || '')
+      })
+      if (selectedFiles.logo) {
+        formData.append('logo', selectedFiles.logo)
+      }
+      if (selectedFiles.favicon) {
+        formData.append('favicon', selectedFiles.favicon)
+      }
+
+      const response = await axios.put('http://localhost:5000/api/settings', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      if (response.data?.settings) {
+        setSettings(response.data.settings)
+      }
+      setSelectedFiles({ logo: null, favicon: null })
+      setSavedAt('just now')
+    } catch (error) {
+      console.error(error)
+      setSavedAt('save failed')
+    }
   }
 
   return (
@@ -84,7 +117,7 @@ export default function Settings() {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex h-[60px] shrink-0 items-center gap-2 border-b-2 text-xs font-semibold ${
+                    className={`flex h-15 shrink-0 items-center gap-2 border-b-2 text-xs font-semibold ${
                       active
                         ? 'border-[#0061b7] text-[#00498f]'
                         : 'border-transparent text-slate-600 hover:text-[#00498f]'
@@ -101,7 +134,20 @@ export default function Settings() {
           <div className="grid gap-8 px-5 py-6 lg:grid-cols-[260px_1fr]">
             <StepIntro activeTab={activeTab} />
             <div className="rounded-md border border-[#c8d1dd] bg-white p-6">
-              {activeTab === 'general' && <GeneralSettings values={values} onChange={updateField} />}
+              {activeTab === 'general' && (
+                <GeneralSettings
+                  values={values}
+                  onChange={updateField}
+                  logoUrl={settings.logoUrl}
+                  faviconUrl={settings.faviconUrl}
+                  onLogoChange={(event) => setSelectedFiles((current) => ({ ...current, logo: event.target.files?.[0] || null }))}
+                  onFaviconChange={(event) => setSelectedFiles((current) => ({ ...current, favicon: event.target.files?.[0] || null }))}
+                  onLogoClick={() => logoInputRef.current?.click()}
+                  onFaviconClick={() => faviconInputRef.current?.click()}
+                  logoInputRef={logoInputRef}
+                  faviconInputRef={faviconInputRef}
+                />
+              )}
               {activeTab === 'contact' && <ContactSettings values={values} onChange={updateField} />}
               {activeTab === 'social' && <SocialSettings values={values} onChange={updateField} />}
               {activeTab === 'seo' && <SeoSettings values={values} onChange={updateField} />}
@@ -126,7 +172,7 @@ export default function Settings() {
           </div>
 
           <footer className="mt-40 flex flex-wrap items-center justify-between gap-3 border-t border-[#d7dce3] bg-[#e7e9ed] px-5 py-4 text-[11px] text-slate-600">
-            <p>© 2024 PharmaContext Medical Information. All rights reserved.</p>
+            <p>© 2024 {values.siteName}. All rights reserved.</p>
             <div className="flex flex-wrap items-center gap-5">
               <a href="#" className="hover:text-[#00498f]">Privacy Policy</a>
               <a href="#" className="hover:text-[#00498f]">Terms of Service</a>
@@ -151,19 +197,35 @@ function StepIntro({ activeTab }) {
   return (
     <div>
       <h2 className="text-lg font-bold leading-tight text-[#00498f]">{content[0]}</h2>
-      <p className="mt-3 max-w-[250px] text-xs leading-5 text-slate-600">{content[1]}</p>
+      <p className="mt-3 max-w-62.5 text-xs leading-5 text-slate-600">{content[1]}</p>
     </div>
   )
 }
 
-function GeneralSettings({ values, onChange }) {
+function GeneralSettings({ values, onChange, logoUrl, faviconUrl, onLogoChange, onFaviconChange, onLogoClick, onFaviconClick, logoInputRef, faviconInputRef }) {
   return (
     <>
       <TextInput label="Site Name" name="siteName" value={values.siteName} onChange={onChange} />
       <TextInput label="Tagline" name="tagline" value={values.tagline} onChange={onChange} />
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <UploadField title="Primary Logo" description="SVG, PNG or WebP up to 5MB" icon={<CloudUpload size={23} />} />
-        <UploadField title="Favicon" description="ICO or PNG (32x32px)" icon={<FileImage size={20} />} />
+        <UploadField
+          title="Primary Logo"
+          description="SVG, PNG or WebP up to 5MB"
+          icon={<CloudUpload size={23} />}
+          previewUrl={logoUrl}
+          onClick={onLogoClick}
+          onChange={onLogoChange}
+          inputRef={logoInputRef}
+        />
+        <UploadField
+          title="Favicon"
+          description="ICO or PNG (32x32px)"
+          icon={<FileImage size={20} />}
+          previewUrl={faviconUrl}
+          onClick={onFaviconClick}
+          onChange={onFaviconChange}
+          inputRef={faviconInputRef}
+        />
       </div>
     </>
   )
@@ -224,17 +286,23 @@ function TextInput({ label, name, value, onChange, icon }) {
   )
 }
 
-function UploadField({ title, description, icon }) {
+function UploadField({ title, description, icon, previewUrl, onClick, onChange, inputRef }) {
   return (
     <div>
       <p className="mb-2 text-xs font-medium text-[#273449]">{title}</p>
       <button
         type="button"
-        className="flex h-[58px] w-full items-center justify-center gap-3 rounded border border-dashed border-[#9cacbd] bg-white text-[#0061b7]"
+        onClick={onClick}
+        className="flex h-14.5 w-full items-center justify-center gap-3 rounded border border-dashed border-[#9cacbd] bg-white text-[#0061b7]"
       >
-        {icon}
+        {previewUrl ? (
+          <img src={previewUrl} alt={title} className="h-10 w-10 rounded object-contain" />
+        ) : (
+          icon
+        )}
         <span className="text-[10px] font-semibold text-slate-500">{description}</span>
       </button>
+      <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={onChange} />
     </div>
   )
 }

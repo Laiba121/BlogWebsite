@@ -82,7 +82,7 @@ router.put('/profile', upload.single('avatar'), async (req, res) => {
       try { fs.unlinkSync(req.file.path) } catch (e) { /* ignore */ }
     }
 
-    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true }).select('-password')
+    const user = await User.findByIdAndUpdate(req.user._id, updates, { returnDocument: 'after' }).select('-password')
     res.json(user)
   } catch (err) {
     console.error('Profile update error:', err.message)

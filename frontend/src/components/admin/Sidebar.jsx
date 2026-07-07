@@ -44,7 +44,7 @@ export default function Sidebar({ user }) {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
     { icon: Pill,            label: 'Medicines',  path: '/admin/medicines' },
     { icon: List,            label: 'Categories', path: '/admin/categories' },
-    { icon: MessageSquare,   label: 'Converts',   path: '/admin/converts' },
+    { icon: MessageSquare,   label: 'Comments',   path: '/admin/comments' },
     { icon: Megaphone,       label: 'Ads',        path: '/admin/ads' },
     { icon: Settings,        label: 'Settings',   path: '/admin/settings' },
   ];
@@ -131,17 +131,21 @@ export default function Sidebar({ user }) {
         </nav>
 
         {/* Help link */}
-        <div
-          className="flex items-center gap-3 px-5 py-2.5 text-sm cursor-pointer"
+        <Link
+          to="/admin/help"
+          onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
+          className="flex items-center gap-3 px-5 py-2.5 text-sm cursor-pointer transition-colors hover:text-white"
           style={{ color: '#64748b' }}
         >
           <HelpCircle size={18} />
           <span>Help</span>
-        </div>
+        </Link>
 
         {/* Footer */}
         <div className="px-3 pb-4 pt-2 space-y-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <button
+          <Link
+            to="/admin/medicines"
+            onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
             className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold text-white transition-colors"
             style={{ background: '#1d4ed8' }}
             onMouseEnter={e => e.currentTarget.style.background = '#1e40af'}
@@ -149,7 +153,7 @@ export default function Sidebar({ user }) {
           >
             <Plus size={18} />
             Add New Medicine
-          </button>
+          </Link>
 
           <LogoutButton />
         </div>

@@ -48,6 +48,26 @@ router.get("/", async (req, res) => {
   }
 })
 
+// Update a drug category from admin panel
+router.patch('/:id/category', async (req, res) => {
+  try {
+    const { category } = req.body
+    const drug = await Drug.findByIdAndUpdate(
+      req.params.id,
+      { category: category?.trim() || undefined },
+      { returnDocument: 'after' }
+    )
+
+    if (!drug) {
+      return res.status(404).json({ success: false, message: 'Drug not found' })
+    }
+
+    res.json({ success: true, drug })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // Create a manual medicine entry
 router.post("/", async (req, res) => {
   try {
