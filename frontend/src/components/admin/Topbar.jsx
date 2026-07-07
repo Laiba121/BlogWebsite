@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Topbar() {
   const [showProfile, setShowProfile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAlertMenu, setShowAlertMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
 
   const stored = typeof window !== 'undefined' ? localStorage.getItem('pharmacontext_user') : null;
@@ -41,6 +44,8 @@ export default function Topbar() {
         />
         <input
           type="text"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
           placeholder="Search data, reports, things..."
           className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg outline-none"
           style={{
@@ -49,36 +54,61 @@ export default function Topbar() {
             color: '#1e293b',
           }}
         />
+        {searchQuery.trim() ? (
+          <div className="absolute left-0 right-0 top-full mt-2 rounded-lg border border-gray-200 bg-white p-3 text-xs text-gray-600 shadow-lg">
+            Showing results for <span className="font-semibold text-gray-900">{searchQuery}</span>
+          </div>
+        ) : null}
       </div>
 
       {/* Right section */}
       <div className="flex items-center gap-2.5 ml-auto">
 
         {/* Alert View badge */}
-        <button
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
-          style={{
-            background: '#eff6ff',
-            color: '#1d4ed8',
-            border: '1px solid #bfdbfe',
-          }}
-        >
-          <span>Alert View</span>
-          <ChevronDown size={13} />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowAlertMenu((current) => !current)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            style={{
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              border: '1px solid #bfdbfe',
+            }}
+          >
+            <span>Alert View</span>
+            <ChevronDown size={13} />
+          </button>
+          {showAlertMenu ? (
+            <div className="absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white p-2 text-xs text-gray-600 shadow-lg">
+              <p className="rounded px-2 py-2 font-semibold text-gray-900">3 new alerts</p>
+              <p className="rounded px-2 py-2 hover:bg-gray-50">Pending approvals</p>
+              <p className="rounded px-2 py-2 hover:bg-gray-50">Imported medicine sync</p>
+            </div>
+          ) : null}
+        </div>
 
         {/* Bell */}
-        <button
-          className="relative flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-gray-100"
-          style={{ color: '#64748b' }}
-          aria-label="Notifications"
-        >
-          <Bell size={18} />
-          <span
-            className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-            style={{ background: '#ef4444', border: '1.5px solid #fff' }}
-          />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications((current) => !current)}
+            className="relative flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-gray-100"
+            style={{ color: '#64748b' }}
+            aria-label="Notifications"
+          >
+            <Bell size={18} />
+            <span
+              className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
+              style={{ background: '#ef4444', border: '1.5px solid #fff' }}
+            />
+          </button>
+          {showNotifications ? (
+            <div className="absolute right-0 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-2 text-xs text-gray-600 shadow-lg">
+              <p className="rounded px-2 py-2 font-semibold text-gray-900">Notifications</p>
+              <p className="rounded px-2 py-2 hover:bg-gray-50">1 medicine imported</p>
+              <p className="rounded px-2 py-2 hover:bg-gray-50">2 users signed up</p>
+            </div>
+          ) : null}
+        </div>
 
         {/* Profile dropdown */}
         <div className="relative">

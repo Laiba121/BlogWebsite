@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const token = localStorage.getItem('pharmacontext_token')
@@ -73,6 +74,25 @@ export default function Dashboard() {
       ]
     : []
 
+  const lowerSearch = searchTerm.trim().toLowerCase()
+  const filteredTopMedicines = (dashboard?.topMedicines || []).filter((medicine) => {
+    if (!lowerSearch) return true
+    return [medicine.name, medicine.category, medicine.status]
+      .join(' ')
+      .toLowerCase()
+      .includes(lowerSearch)
+  })
+
+  const filteredPopularSearches = (dashboard?.popularSearches || []).filter((item) => {
+    if (!lowerSearch) return true
+    return (item.term || '').toLowerCase().includes(lowerSearch)
+  })
+
+  const filteredNewsletters = (dashboard?.newsletters || []).filter((newsletter) => {
+    if (!lowerSearch) return true
+    return (newsletter.title || '').toLowerCase().includes(lowerSearch)
+  })
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -84,7 +104,9 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="relative">
               <input
-                placeholder="Search data, reports, drugs..."
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search medicines, categories, newsletters..."
                 className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 border border-gray-200 w-80 text-sm"
               />
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</div>
@@ -126,18 +148,18 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-4">
-            <PopularSearches searches={dashboard?.popularSearches || []} loading={loading} />
+            <PopularSearches searches={filteredPopularSearches} loading={loading} />
             <HealthBanner network={dashboard?.network} loading={loading} />
           </div>
         </div>
 
         <div>
-          <TopMedicinesTable medicines={dashboard?.topMedicines || []} loading={loading} />
+          <TopMedicinesTable medicines={filteredTopMedicines} loading={loading} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <ActiveNewsletters newsletters={dashboard?.newsletters || []} loading={loading} />
+            <ActiveNewsletters newsletters={filteredNewsletters} loading={loading} />
           </div>
 
           <div>

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useSiteSettings } from "../context/SiteSettingsContext";
 
 /* =========================================================
    1. HEADER
@@ -205,6 +206,8 @@ function ContactInfoItem({ icon, iconBg, iconColor, title, lines }) {
 }
 
 function ContactInfoCard() {
+  const { settings } = useSiteSettings();
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex">
       <div className="w-1 bg-[#1B3B6F]" />
@@ -225,14 +228,14 @@ function ContactInfoCard() {
           iconBg="#E3F8FA"
           iconColor="#0EA5B7"
           title="Direct Contact"
-          lines={["Support: +1 (800) 555-0192", "Admin: +1 (617) 555-0843"]}
+          lines={[`Support: ${settings.supportPhone}`, `Admin: ${settings.supportPhone}`]}
         />
         <ContactInfoItem
           icon={<Mail size={16} />}
           iconBg="#FDEDE2"
           iconColor="#E96E2D"
           title="Electronic Mail"
-          lines={["inquiry@pharmacontext.com", "tech-support@pharmacontext.com"]}
+          lines={[settings.supportEmail, settings.smtpEmail]}
         />
       </div>
     </div>
@@ -281,7 +284,7 @@ function UrgentHelpCard() {
     <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between">
       <div>
         <p className="text-sm font-semibold text-white">Need Urgent Help?</p>
-        <p className="text-xs text-gray-400 mt-1 leading-relaxed max-w-[200px]">
+        <p className="text-xs text-gray-400 mt-1 leading-relaxed max-w-50">
           Our 24/7 Clinical support line is open for institutional members.
         </p>
       </div>

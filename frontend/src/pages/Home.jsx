@@ -5,6 +5,7 @@ import FeaturedMedicines from '../components/FeaturedMedicines'
 import TrendingSection from '../components/TrendingSection'
 import NewsletterSection from '../components/NewsletterSection'
 import Footer from '../components/Footer'
+import AdSenseAd from '../components/AdSenseAd'
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <HeroSection />
       <CategoryGrid />
       <FeaturedMedicines />
+      <AdSenseAd />
       <TrendingSection />
       <NewsletterSection />
       <Footer />

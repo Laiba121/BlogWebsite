@@ -97,4 +97,13 @@ export const getAdminDashboard = (token) =>
 export const updateAdminProfile = (formData, token) =>
   api.put('/api/admin/profile', formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }).then(r => r.data)
 
+export const getComments = (medicineId) =>
+  api.get(`/api/comments/${medicineId}`).then(r => r.data)
+
+export const postComment = (medicineId, payload, token) =>
+  api.post(`/api/comments/${medicineId}`, payload, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data)
+
+export const deleteComment = (commentId, token) =>
+  api.delete(`/api/comments/${commentId}`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data)
+
 export default api

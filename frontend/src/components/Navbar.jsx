@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useSiteSettings } from '../context/SiteSettingsContext'
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false)
   const [user, setUser] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
+  const { settings } = useSiteSettings()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -33,14 +35,19 @@ export default function Navbar() {
 
         {/* ── Logo ── */}
         <Link to="/" className="flex items-center gap-2 text-[#1e3a8a] font-bold text-[16px] tracking-tight shrink-0">
-          {/* Pill icon */}
-          <svg className="text-blue-600" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10.5 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v3" />
-            <circle cx="18" cy="18" r="3" />
-            <path d="m22 22-1.5-1.5" />
-          </svg>
-          PharmaContext
+          <div className="flex items-center gap-2">
+            {settings.logoUrl ? (
+              <img src={settings.logoUrl} alt={settings.siteName} className="h-8 w-auto rounded object-contain" />
+            ) : (
+              <svg className="text-blue-600" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.5 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v3" />
+                <circle cx="18" cy="18" r="3" />
+                <path d="m22 22-1.5-1.5" />
+              </svg>
+            )}
+            <span>{settings.siteName}</span>
+          </div>
         </Link>
 
         {/* ── Nav Links ── */}
