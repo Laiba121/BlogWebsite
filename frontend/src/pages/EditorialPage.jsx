@@ -98,7 +98,7 @@ export default function EditorialPolicyPage() {
       <Navbar />
 
       <main className="flex-1">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+     <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
           {/* Breadcrumb */}
           <Breadcrumb
             items={[
